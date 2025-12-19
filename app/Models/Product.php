@@ -168,6 +168,14 @@ class Product extends Model
         return $query->where('is_featured', true);
     }
 
+    public function scopeOnSale($query)
+    {
+        return $query->whereNotNull('discount_price')
+                     ->whereColumn('discount_price', '<', 'price');
+        // ↑ whereColumn() membandingkan 2 kolom di database
+        //   Berbeda dengan where() yang membandingkan kolom dengan nilai
+    }
+
     /**
      * Filter produk yang tersedia (ada stok).
      */
@@ -204,4 +212,6 @@ class Product extends Model
     {
         return $query->whereBetween('price', [$min, $max]);
     }
+
+
 }
