@@ -145,7 +145,7 @@ Route::controller(GoogleController::class)->group(function () {
 
 Route::middleware(['auth', 'admin'])->prefix('admin')->name('admin.')->group(function () {
     // Dashboard
-    Route::get('/', [DashboardController::class, 'index'])->name('dashboard');
+    Route::get('/', [DashboardController::class, 'Dashboard'])->name('dashboard');
 
     // Produk CRUD
     Route::resource('products', AdminProductController::class);
@@ -164,3 +164,4 @@ Route::middleware(['auth', 'admin'])->prefix('admin')->name('admin.')->group(fun
 // AUTH ROUTES (dari Laravel UI)
 // ================================================
 Auth::routes();
+
