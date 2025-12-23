@@ -1,70 +1,65 @@
 <?php
 
-use Illuminate\Support\Facades\Route;
-use Illuminate\Support\Facades\Auth;
-use App\Http\Controllers\ProfileController;
-use App\Http\Controllers\Auth\GoogleController;
 use App\Http\Controllers\HomeController;
 use App\Http\Controllers\CatalogController;
 use App\Http\Controllers\CartController;
 use App\Http\Controllers\CheckoutController;
 use App\Http\Controllers\WishlistController;
 use App\Http\Controllers\OrderController;
+use App\Http\Controllers\ProfileController;
 use App\Http\Controllers\Admin\DashboardController;
 use App\Http\Controllers\Admin\ProductController as AdminProductController;
 use App\Http\Controllers\Admin\CategoryController as AdminCategoryController;
 use App\Http\Controllers\Admin\OrderController as AdminOrderController;
+use Illuminate\Support\Facades\Route;
+use App\Http\Controllers\Auth\GoogleController;
+use App\Http\Controllers\AdminController;
+use App\Http\Controllers\Admin\CategoryController;
+use App\Http\Controllers\Admin\ProductController;
 
 Route::get('/', function () {
     return view('welcome');
 });
+
+Route::get('/coba', function () {
+    return view('flexy');
+});
+
 Route::get('/tentang', function () {
     return view('tentang');
 });
+
 Route::get('/sapa/{nama}', function ($nama) {
-    return "Halo, $nama! Selamat datang di Toko Online.";
+    return "Hallo, $nama! Selamat datang di toko online kami.";
 });
 
-Route::get('/kategori/{nama?}', function ($nama = 'Semua') {
+Route::get('/kategori/{nama?}', function ($nama = 'semua') {
     return "Menampilkan kategori: $nama";
 });
+
 Route::get('/produk/{id}', function ($id) {
-    return "Detail produk #$id";
-})->name('produk.detail');
+    return "Menampilkan produk dengan ID: $id";
+})->name ('detail.produk');
+
 
 Auth::routes();
 
-Route::get('/home', [App\Http\Controllers\HomeController::class, 'index'])->name('home');
+Route::middleware(['auth', 'admin'])
+    ->prefix('admin')
+    ->name('admin.')
+    ->group(function () {
 
-Auth::routes();
+        // /admin/dashboard
+        Route::get('/dashboard', [AdminController::class, 'dashboard'])
+            ->name('dashboard');
+         Route::resource('/products', AdminProductController::class);
+        Route::resource('/categories', AdminCategoryController::class);
 
-Route::get('/home', [App\Http\Controllers\HomeController::class, 'index'])->name('home');
+    });
 
-Auth::routes();
-
-Route::get('/home', [App\Http\Controllers\HomeController::class, 'index'])->name('home');
-
-Route::get('/', function () {
-    return view('welcome');
-});
-Auth::routes();
-
-Route::middleware('auth')->group(function () {
-
-    Route::get('/home', [App\Http\Controllers\HomeController::class, 'index'])
-        ->name('home');
-    Route::get('/profile', [ProfileController::class, 'edit'])
-        ->name('profile.edit');
-
-    Route::put('/profile', [ProfileController::class, 'update'])
-        ->name('profile.update');
-});
 Route::controller(GoogleController::class)->group(function () {
-    Route::get('/auth/google', 'redirect')
-        ->name('auth.google');
-
-    Route::get('/auth/google/callback', 'callback')
-        ->name('auth.google.callback');
+    Route::get('auth/google', 'redirect')->name('auth.google');
+    Route::get('auth/google/callback', 'callback');
 });
 
 Route::middleware('auth')->group(function () {
@@ -72,19 +67,16 @@ Route::middleware('auth')->group(function () {
     Route::patch('/profile', [ProfileController::class, 'update'])->name('profile.update');
     Route::delete('/profile', [ProfileController::class, 'destroy'])->name('profile.destroy');
     Route::delete('/profile/avatar', [ProfileController::class, 'deleteAvatar'])->name('profile.avatar.destroy');
-    Route::put('/profile/password', [ProfileController::class, 'updatePassword'])->name('profile.password.update');
+
 });
 
-Route::get('/', [HomeController::class, 'index'])->name('home');
+Route::get('/home', [HomeController::class, 'index'])->name('home');
+Route::get('/catalog', [CatalogController::class, 'index'])->name('catalog.index');
+Route::get('/product/{slug}', [CatalogController::class, 'show'])->name('catalog.show');
+Route::get('/catalog/search', [CatalogController::class, 'search'])->name('catalog.search');
+Route::get('/catalog/category/{category}', [CatalogController::class, 'category'])->name('catalog.category');
 
-// Katalog Produk
-Route::get('/products', [CatalogController::class, 'index'])->name('catalog.index');
-Route::get('/products/{slug}', [CatalogController::class, 'show'])->name('catalog.show');
 
-
-// ================================================
-// HALAMAN YANG BUTUH LOGIN (Customer)
-// ================================================
 
 Route::middleware('auth')->group(function () {
     // Keranjang Belanja
@@ -94,12 +86,23 @@ Route::middleware('auth')->group(function () {
     Route::delete('/cart/{item}', [CartController::class, 'remove'])->name('cart.remove');
 
     // Wishlist
-    Route::get('/wishlist', [WishlistController::class, 'index'])->name('wishlist.index');
-    Route::post('/wishlist/toggle/{product}', [WishlistController::class, 'toggle'])->name('wishlist.toggle');
+    Route::post('/wishlist/{product}', [WishlistController::class, 'toggle'])
+    ->middleware('auth')
+    ->name('wishlist.toggle');
+
+Route::get('/wishlist', [WishlistController::class, 'index'])
+    ->middleware('auth')
+    ->name('wishlist.index');
+
+Route::delete('/wishlist/{id}', [WishlistController::class, 'destroy'])
+    ->middleware('auth')
+    ->name('wishlist.destroy');
 
     // Checkout
     Route::get('/checkout', [CheckoutController::class, 'index'])->name('checkout.index');
     Route::post('/checkout', [CheckoutController::class, 'store'])->name('checkout.store');
+    Route::get('/checkout/success', [CheckoutController::class, 'success'])->name('checkout.success');
+
 
     // Pesanan Saya
     Route::get('/orders', [OrderController::class, 'index'])->name('orders.index');
@@ -111,41 +114,9 @@ Route::middleware('auth')->group(function () {
     Route::delete('/profile', [ProfileController::class, 'destroy'])->name('profile.destroy');
 });
 
-// ================================================
-// GOOGLE OAUTH ROUTES
-// ================================================
-// Route ini diakses oleh browser, tidak perlu middleware auth
-// ================================================
-
-Route::controller(GoogleController::class)->group(function () {
-    // ================================================
-    // ROUTE 1: REDIRECT KE GOOGLE
-    // ================================================
-    // URL: /auth/google
-    // Dipanggil saat user klik tombol "Login dengan Google"
-    // ================================================
-    Route::get('/auth/google', 'redirect')
-        ->name('auth.google');
-
-    // ================================================
-    // ROUTE 2: CALLBACK DARI GOOGLE
-    // ================================================
-    // URL: /auth/google/callback
-    // Dipanggil oleh Google setelah user klik "Allow"
-    // URL ini HARUS sama dengan yang didaftarkan di Google Console!
-    // ================================================
-    Route::get('/auth/google/callback', 'callback')
-        ->name('auth.google.callback');
-});
-
-
-// ================================================
-// HALAMAN ADMIN (Butuh Login + Role Admin)
-// ================================================
-
 Route::middleware(['auth', 'admin'])->prefix('admin')->name('admin.')->group(function () {
     // Dashboard
-    Route::get('/', [DashboardController::class, 'Dashboard'])->name('dashboard');
+    Route::get('/', [DashboardController::class, 'index'])->name('dashboard');
 
     // Produk CRUD
     Route::resource('products', AdminProductController::class);
@@ -159,9 +130,29 @@ Route::middleware(['auth', 'admin'])->prefix('admin')->name('admin.')->group(fun
     Route::patch('/orders/{order}/status', [AdminOrderController::class, 'updateStatus'])->name('orders.updateStatus');
 });
 
+   //order
+   Route::middleware('auth')->group(function () {
+    Route::get('/orders', [OrderController::class, 'index'])->name('orders.index');
+    Route::get('/orders/{order}', [OrderController::class, 'show'])->name('orders.show');
+    Route::delete('/orders/{order}', [OrderController::class, 'destroy'])->name('orders.destroy');
+});
 
-// ================================================
-// AUTH ROUTES (dari Laravel UI)
-// ================================================
+Route::middleware(['auth', 'admin'])->prefix('admin')->name('admin.')->group(function () {
+    // Kategori
+    Route::resource('categories', CategoryController::class)->except(['show']); // Kategori biasanya tidak butuh show detail page
+
+    // Produk
+    Route::resource('products', ProductController::class);
+
+    // Route tambahan untuk AJAX Image Handling (jika diperlukan)
+    // ...
+});
+
 Auth::routes();
 
+Route::get('/login', function () {
+    return view('auth.login');
+})->name('login');
+
+
+Auth::routes();

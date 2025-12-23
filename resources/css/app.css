@@ -1,20 +1,19 @@
-/* ================================================
-   FILE: resources/css/app.css
-   FUNGSI: Entry point untuk semua CSS
-   ================================================ */
-
-/* Import Bootstrap CSS */
-/* Kita import di sini agar ikut ter-compile oleh Vite dan bisa di-minify saat production */
+@import 'tailwindcss';
 @import "bootstrap/dist/css/bootstrap.min.css";
-
-/* Import Bootstrap Icons */
 @import "bootstrap-icons/font/bootstrap-icons.css";
 
-/* ================================================
-   CUSTOM STYLES - Variabel dan Override
-   ================================================ */
+@source '../../vendor/laravel/framework/src/Illuminate/Pagination/resources/views/*.blade.php';
+@source '../../storage/framework/views/*.php';
+@source '../**/*.blade.php';
+@source '../**/*.js';
 
-:root {
+@theme {
+    --font-sans: 'Instrument Sans', ui-sans-serif, system-ui, sans-serif, 'Apple Color Emoji', 'Segoe UI Emoji',
+        'Segoe UI Symbol', 'Noto Color Emoji';
+}
+
+
+style:root {
     /* Warna Brand Toko */
     --primary-color: #4f46e5;
     /* Indigo */
@@ -40,9 +39,6 @@
     border-color: #4338ca;
 }
 
-/* ================================================
-   LAYOUT STYLES
-   ================================================ */
 
 body {
     font-family: "Inter", system-ui, -apple-system, sans-serif;

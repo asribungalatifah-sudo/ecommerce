@@ -1,117 +1,72 @@
 <?php
+
 namespace App\Http\Controllers\Auth;
 
 use App\Http\Controllers\Controller;
 use App\Models\User;
-use Exception;
-use Illuminate\Support\Facades\Auth;
+use Illuminate\Foundation\Auth\RegistersUsers;
 use Illuminate\Support\Facades\Hash;
-use Illuminate\Support\Str;
-use Laravel\Socialite\Facades\Socialite;
+use Illuminate\Support\Facades\Validator;
 
-class GoogleController extends Controller
+class RegisterController extends Controller
 {
+    /*
+    |--------------------------------------------------------------------------
+    | Register Controller
+    |--------------------------------------------------------------------------
+    |
+    | This controller handles the registration of new users as well as their
+    | validation and creation. By default this controller uses a trait to
+    | provide this functionality without requiring any additional code.
+    |
+    */
+
+    use RegistersUsers;
+
     /**
+     * Where to redirect users after registration.
      *
-     * @return \Illuminate\Http\RedirectResponse
+     * @var string
      */
-    public function redirect()
+    protected $redirectTo = '/home';
+
+    /**
+     * Create a new controller instance.
+     *
+     * @return void
+     */
+    public function __construct()
     {
-        return Socialite::driver('google')
-            ->scopes(['email', 'profile'])
-            ->redirect();
+        $this->middleware('guest');
     }
 
     /**
+     * Get a validator for an incoming registration request.
      *
-     * @return \Illuminate\Http\RedirectResponse
+     * @param  array  $data
+     * @return \Illuminate\Contracts\Validation\Validator
      */
-    public function callback()
+    protected function validator(array $data)
     {
-        if (request()->has('error')) {
-            $error = request('error');
-
-            if ($error === 'access_denied') {
-                return redirect()
-                    ->route('login')
-                    ->with('info', 'Login dengan Google dibatalkan.');
-            }
-
-            return redirect()
-                ->route('login')
-                ->with('error', 'Terjadi kesalahan: ' . $error);
-        }
-
-        try {
-            $googleUser = Socialite::driver('google')->user();
-            $user = $this->findOrCreateUser($googleUser);
-            Auth::login($user, remember: true);
-            session()->regenerate();
-
-            return redirect()
-                ->intended(route('home'))
-                ->with('success', 'Berhasil login dengan Google!');
-
-        } catch (\Laravel\Socialite\Two\InvalidStateException $e) {
-            return redirect()
-                ->route('login')
-                ->with('error', 'Session telah berakhir. Silakan coba lagi.');
-        } catch (\GuzzleHttp\Exception\ClientException $e) {
-            logger()->error('Google API Error: ' . $e->getMessage());
-
-            return redirect()
-                ->route('login')
-                ->with('error', 'Terjadi kesalahan saat menghubungi Google. Coba lagi.');
-
-        } catch (Exception $e) {
-
-
-            logger()->error('OAuth Error: ' . $e->getMessage());
-
-            return redirect()
-                ->route('login')
-                ->with('error', 'Gagal login. Silakan coba lagi.');
-        }
-    }
-
-    /**
-     *
-     * @param \Laravel\Socialite\Contracts\User
-     * @return \App\Models\User
-     */
-    protected function findOrCreateUser($googleUser): User
-    {
-        $user = User::where('google_id', $googleUser->getId())->first();
-
-        if ($user) {            if ($user->avatar !== $googleUser->getAvatar()) {
-                $user->update(['avatar' => $googleUser->getAvatar()]);
-            }
-            return $user;
-        }
-
-        $user = User::where('email', $googleUser->getEmail())->first();
-
-        if ($user) {
-            $user->update([
-                'google_id'         => $googleUser->getId(),
-                'avatar'            => $googleUser->getAvatar() ?? $user->avatar,
-                'email_verified_at' => $user->email_verified_at ?? now(),
-            ]);
-
-            return $user;
-        }
-
-        return User::create([
-            'name'              => $googleUser->getName(),
-
-            'email'             => $googleUser->getEmail(),
-
-            'google_id'         => $googleUser->getId(),
-
-            'avatar'            => $googleUser->getAvatar(),
-
-            'email_verified_at' => now(),
-            'password'          => Hash::make(Str::random(24)),
-            'role'              => 'customer',
+        return Validator::make($data, [
+            'name' => ['required', 'string', 'max:255'],
+            'email' => ['required', 'string', 'email', 'max:255', 'unique:users'],
+            'password' => ['required', 'string', 'min:8', 'confirmed'],
         ]);
     }
+
+    /**
+     * Create a new user instance after a valid registration.
+     *
+     * @param  array  $data
+     * @return \App\Models\User
+     */
+    protected function create(array $data)
+    {
+        return User::create([
+            'name' => $data['name'],
+            'email' => $data['email'],
+            'password' => Hash::make($data['password']),
+        ]);
+    }
+}

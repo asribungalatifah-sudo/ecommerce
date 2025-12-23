@@ -1,119 +1,102 @@
-{{-- ======================================== FILE:
-resources/views/auth/login.blade.php FUNGSI: Halaman form login
-======================================== --}}
 @extends('layouts.app')
-{{-- ↑ Menggunakan layout dari layouts/app.blade.php Halaman ini akan "masuk" ke bagian
-@yield('content') --}}
-@section('content')
-{{-- ↑ Mulai section yang akan ditampilkan di @yield('content') --}}
 
+@section('content')
 <div class="container">
     <div class="row justify-content-center">
-        {{-- ↑ justify-content-center = posisikan di tengah horizontal --}}
-
         <div class="col-md-6">
-            {{-- ↑ col-md-6 = lebar 50% di layar medium ke atas --}}
 
             <div class="card shadow-sm">
-                {{-- Card Header --}}
                 <div class="card-header bg-primary text-white text-center">
-                    <h4 class="mb-0">🔐 Login ke Akun Anda</h4>
+                    <h4 class="mb-0">
+                        <i class="bi bi-shield-lock me-1"></i> Login ke Akun Anda
+                    </h4>
                 </div>
 
                 <div class="card-body p-4">
-                    {{-- ================================================ FORM LOGIN
-                    ================================================ method="POST" = Kirim
-                    data secara aman (tidak terlihat di URL) action = URL tujuan submit
-                    form ================================================ --}}
                     <form method="POST" action="{{ route('login') }}">
-                        {{-- ================================================ CSRF TOKEN
-                        ================================================ @csrf WAJIB ada di
-                        setiap form POST/PUT/DELETE Ini adalah proteksi keamanan dari
-                        Laravel ================================================ --}} @csrf
-                        {{-- ================== FIELD EMAIL ================== --}}
-                        <div class="mb-3">
-                            <label for="email" class="form-label">Email</label>
+                        @csrf
 
-                            <input id="email" type="email" class="form-control @error('email')
-              is-invalid @enderror" name="email" value="{{ old('email') }}" {{-- ↑ @error('email')=jika ada error pada
-                                field email, tambahkan class 'is-invalid' untuk styling merah --}} {{-- ↑
-                                old('email')=isi kembali nilai sebelumnya jika form gagal validasi --}} required
-                                autocomplete="email" autofocus placeholder="nama@email.com"> {{--
-                            Tampilkan pesan error jika ada --}}
+                        {{-- Email --}}
+                        <div class="mb-3">
+                            <label class="form-label">Email</label>
+                            <input type="email"
+                                   name="email"
+                                   value="{{ old('email') }}"
+                                   class="form-control @error('email') is-invalid @enderror"
+                                   placeholder="nama@email.com"
+                                   required autofocus>
+
                             @error('email')
-                            <span class="invalid-feedback" role="alert">
-                                <strong>{{ $message }}</strong>
-                            </span>
+                                <div class="invalid-feedback">{{ $message }}</div>
                             @enderror
                         </div>
 
-                        {{-- ================== FIELD PASSWORD ================== --}}
+                        {{-- Password --}}
                         <div class="mb-3">
-                            <label for="password" class="form-label">Password</label>
-
-                            <input id="password" type="password" {{-- ↑ type="password"="karakter" akan disembunyikan
-                                (●●●●) --}} class="form-control @error('password') is-invalid @enderror" name="password"
-                                required autocomplete="current-password" placeholder="••••••••" />
+                            <label class="form-label">Password</label>
+                            <input type="password"
+                                   name="password"
+                                   class="form-control @error('password') is-invalid @enderror"
+                                   placeholder="••••••••"
+                                   required>
 
                             @error('password')
-                            <span class="invalid-feedback" role="alert">
-                                <strong>{{ $message }}</strong>
-                            </span>
+                                <div class="invalid-feedback">{{ $message }}</div>
                             @enderror
                         </div>
 
-                        {{-- ================== CHECKBOX REMEMBER ME ================== --}}
+                        {{-- Remember --}}
                         <div class="mb-3 form-check">
-                            <input class="form-check-input" type="checkbox" name="remember" id="remember" {{
-                                old('remember') ? 'checked' : '' }}> {{-- ↑ Jika
-                            sebelumnya dicentang, tetap centang --}}
-
+                            <input class="form-check-input"
+                                   type="checkbox"
+                                   name="remember"
+                                   id="remember"
+                                   {{ old('remember') ? 'checked' : '' }}>
                             <label class="form-check-label" for="remember">
                                 Ingat Saya
                             </label>
                         </div>
-                        {{-- ↑ "Ingat Saya" = Simpan session lebih lama (tidak logout
-                        otomatis) --}} {{-- ================== TOMBOL SUBMIT
-                        ================== --}}
-                        <div class="d-grid gap-2">
-                            {{-- ↑ d-grid = display grid, membuat button full width --}}
+
+                        {{-- Login --}}
+                        <div class="d-grid mb-3">
                             <button type="submit" class="btn btn-primary btn-lg">
-                                Login
+                                <i class="bi bi-box-arrow-in-right me-1"></i> Login
                             </button>
                         </div>
 
-                        {{-- ================== LINK LUPA PASSWORD ================== --}}
-                        <div class="mt-3 text-center">
-                            @if (Route::has('password.request'))
-                            <a class="text-decoration-none" href="{{ route('password.request') }}">
-                                Lupa Password?
-                            </a>
-                            @endif
-                        </div>
+                        {{-- Lupa password --}}
+                        @if (Route::has('password.request'))
+                            <div class="text-center mb-3">
+                                <a href="{{ route('password.request') }}" class="text-decoration-none">
+                                    Lupa Password?
+                                </a>
+                            </div>
+                        @endif
 
-                        <hr />
-                        {{-- ↑ Garis pemisah --}} {{-- ================== SOCIAL LOGIN
-                        ================== --}} {{-- Tombol ini akan diaktifkan di Hari 4
-                        --}}
-                        <div class="d-grid gap-2">
-                            <a href="{{ route('auth.google') }}" class="btn btn-outline-danger">
-                                <img src="https://www.svgrepo.com/show/475656/google-color.svg" width="20"
-                                    class="me-2" />
+                        <hr>
+
+                        {{-- Google Login --}}
+                        <div class="d-grid mb-3">
+                            <a href="{{ route('auth.google') }}"
+                               class="btn btn-outline-danger btn-lg">
+                                <i class="bi bi-google me-1"></i>
                                 Login dengan Google
                             </a>
                         </div>
 
-                        {{-- ================== LINK REGISTER ================== --}}
-                        <p class="mt-4 text-center mb-0">
+                        {{-- Register --}}
+                        <p class="text-center mb-0">
                             Belum punya akun?
-                            <a href="{{ route('register') }}" class="text-decoration-none fw-bold">
+                            <a href="{{ route('register') }}" class="fw-bold text-decoration-none">
                                 Daftar Sekarang
                             </a>
                         </p>
+
                     </form>
                 </div>
             </div>
+
         </div>
     </div>
 </div>
-@endsection {{-- ↑ Akhir dari section content --}}
+@endsection
