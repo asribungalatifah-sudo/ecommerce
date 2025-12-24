@@ -8,9 +8,6 @@ use App\Http\Controllers\WishlistController;
 use App\Http\Controllers\OrderController;
 use App\Http\Controllers\ProfileController;
 use App\Http\Controllers\Admin\DashboardController;
-use App\Http\Controllers\Admin\ProductController as AdminProductController;
-use App\Http\Controllers\Admin\CategoryController as AdminCategoryController;
-use App\Http\Controllers\Admin\OrderController as AdminOrderController;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\Auth\GoogleController;
 use App\Http\Controllers\AdminController;
@@ -50,7 +47,7 @@ Route::middleware(['auth', 'admin'])
     ->group(function () {
 
         // /admin/dashboard
-        Route::get('/dashboard', [AdminController::class, 'dashboard'])
+        Route::get('/dashboard', [DashboardController::class, 'index'])
             ->name('dashboard');
          Route::resource('/products', AdminProductController::class);
         Route::resource('/categories', AdminCategoryController::class);
@@ -156,3 +153,10 @@ Route::get('/login', function () {
 
 
 Auth::routes();
+
+Route::middleware(['auth', 'admin'])
+    ->prefix('admin')
+    ->group(function () {
+        Route::get('/', [DashboardController::class, 'index']);
+    });
+
