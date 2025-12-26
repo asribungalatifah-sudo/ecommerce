@@ -1,10 +1,8 @@
 <?php
-
 namespace App\Http\Controllers;
 
-use Illuminate\Http\Request;
-use Illuminate\Support\Facades\Auth;
 use App\Models\Order;
+use Illuminate\Support\Facades\Auth;
 
 class OrderController extends Controller
 {
@@ -23,26 +21,50 @@ class OrderController extends Controller
     /**
      * Detail order tertentu
      */
-    public function show($id)
+   public function show($id)
+{
+    $order = Order::with('items.product')
+        ->where('id', $id)
+        ->where('user_id', Auth::id())
+        ->firstOrFail();
+
+    $snapToken = null;
+
+    // Hanya generate token jika status pending
+    if ($order->status === 'pending') {
+        \Midtrans\Config::$serverKey = config('midtrans.server_key');
+        \Midtrans\Config::$isProduction = false; // Sandbox
+        \Midtrans\Config::$isSanitized = true;
+        \Midtrans\Config::$is3ds = true;
+
+        $params = [
+            'transaction_details' => [
+                'order_id' => $order->order_number,
+                'gross_amount' => $order->total_amount,
+            ],
+            'customer_details' => [
+                'first_name' => $order->shipping_name,
+                'phone' => $order->shipping_phone,
+            ],
+        ];
+
+        $snapToken = \Midtrans\Snap::getSnapToken($params);
+    }
+
+    return view('orders.show', compact('order', 'snapToken'));
+    }
+
+    public function destroy($id)
     {
-        $order = Order::with('items.product') // load produk dari setiap item
-            ->where('id', $id)
+        $order = Order::where('id', $id)
             ->where('user_id', Auth::id())
+            ->where('status', 'pending') // hanya bisa hapus pending
             ->firstOrFail();
 
-        return view('orders.show', compact('order'));
+        $order->items()->delete(); // hapus item order
+        $order->delete();          // hapus order
+
+        return back()->with('success', 'Pesanan berhasil dihapus');
     }
-    public function destroy($id)
-{
-    $order = Order::where('id', $id)
-                  ->where('user_id', Auth::id())
-                  ->where('status', 'pending') // hanya bisa hapus pending
-                  ->firstOrFail();
-
-    $order->items()->delete(); // hapus item order
-    $order->delete();          // hapus order
-
-    return back()->with('success', 'Pesanan berhasil dihapus');
-}
 
 }
