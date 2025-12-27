@@ -19,12 +19,12 @@ return new class extends Migration
             $table->string('session_id')->nullable();
 
             $table->timestamps();
-            
+
             $table->index('session_id');
         });
     }
 
-    public function down(): void
+    public function down(): void    
     {
         Schema::dropIfExists('carts');
     }

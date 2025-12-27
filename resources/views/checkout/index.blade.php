@@ -78,7 +78,7 @@
                                 <textarea name="notes" id="notes" rows="2" class="form-control">{{ old('notes') }}</textarea>
                             </div>
 
-                            <button type="submit" class="btn btn-primary w-100">
+                            <button type="submit" class="btn btn-danger w-100">
                                 🛒 Bayar & Buat Pesanan
                             </button>
                         </form>

@@ -41,7 +41,7 @@
 
             {{-- 4. Connected Accounts --}}
             <div class="card mb-4">
-                <div class="card-header bg-white fw-bold">Akun Terhubung</div>
+                <div class="card-header bg-whitez fw-bold">Akun Terhubung</div>
                 <div class="card-body">
                     @include('profile.partials.connected-accounts')
                 </div>

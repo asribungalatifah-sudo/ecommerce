@@ -8,9 +8,6 @@
 <head>
     <!-- ... meta tags ... -->
 
-    @vite(['resources/css/app.css', 'resources/js/app.js']) {{-- Stack untuk
-    script tambahan dari child view --}} @stack('scripts')
-    
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
@@ -36,14 +33,17 @@
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
 
+        {{-- @vite(['resources/css/app.css', 'resources/js/app.js']) --}}
+
 </head>
 <body>
+    @include('partials.navbar')
     {{-- ============================================
          NAVBAR
          ============================================ --}}
-    @include('partials.navbar')
 
-    {{-- ============================================
+
+         {{-- ============================================
          FLASH MESSAGES
          ============================================ --}}
     <div class="container mt-3">
@@ -61,6 +61,8 @@
          FOOTER
          ============================================ --}}
     @include('partials.footer')
+
+     @stack('scripts')
 
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"
         integrity="sha384-YvpcrYf0tY3lHB60NNkmXc5s9fDVZLESaAA55NDzOxhy9GkcIdslK1eN7N6jIeHz"

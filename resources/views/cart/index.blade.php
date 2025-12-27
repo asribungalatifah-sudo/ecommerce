@@ -107,7 +107,7 @@
                                 Rp {{ number_format($totalPrice, 0, ',', '.') }}
                             </span>
                         </div>
-                        <a href="{{ route('checkout.index') }}" class="btn btn-primary w-100 btn-lg">
+                        <a href="{{ route('checkout.index') }}" class="btn btn-danger w-100 btn-lg">
                             <i class="bi bi-credit-card me-2"></i>Checkout
                         </a>
                         <a href="{{ route('orders.index') }}" class="btn btn-outline-secondary w-100 mt-2">

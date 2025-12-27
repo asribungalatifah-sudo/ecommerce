@@ -19,6 +19,9 @@
             <i class="bi bi-heart"></i><br>
             Wishlist kamu masih kosong
         </div>
+
+
+        
     @else
         <div class="row g-4">
             @foreach($wishlists as $item)
