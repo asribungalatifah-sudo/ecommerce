@@ -99,6 +99,7 @@
                     </div>
                 </div>
 
+
                 {{-- Alamat Pengiriman --}}
                 <div class="card-body bg-light border-top">
                     <h3 class="h5 fw-semibold mb-3">Alamat Pengiriman</h3>
@@ -108,7 +109,11 @@
                         {{ $order->shipping_address }}
                     </address>
                 </div>
-
+  {{-- Debug Info (opsional, hapus di production) --}}
+                <div class="alert alert-secondary m-4">
+                    Status: {{ $order->status }} <br>
+                    Snap Token: {{ $order->snap_token ? 'ADA' : 'KOSONG' }}
+                </div>
                {{-- Tombol Bayar (hanya jika pending) --}}
                 @if($order->status === 'pending' && $order->snap_token)
                 <div class="card-body bg-primary bg-opacity-10 border-top text-center">
