@@ -14,9 +14,9 @@ FUNGSI: Master layout halaman customer
     <meta name="csrf-token" content="{{ csrf_token() }}">
 
     {{-- SEO --}}
-    <title>@yield('title', 'Assalaam Football Store') - {{ config('app.name') }}</title>
+    <title>@yield('title', 'Toko bunga') - {{ config('app.name') }}</title>
     <meta name="description"
-        content="@yield('meta_description', 'Assalaam Football Store - Jersey, apparel, dan merchandise sepak bola')">
+        content="@yield('meta_description', 'Toko bunga')">
 
     {{-- Favicon --}}
     <link rel="icon" href="{{ asset('favicon.ico') }}">

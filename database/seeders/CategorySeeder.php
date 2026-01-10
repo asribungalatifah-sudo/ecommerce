@@ -12,39 +12,39 @@ class CategorySeeder extends Seeder
     {
         $categories = [
             [
-                'name' => 'Elektronik',
-                'slug' => 'elektronik',
-                'description' => 'Perangkat elektronik seperti smartphone, laptop, dan gadget lainnya',
+                'name' => 'Sparepart Mobil',
+                'slug' => 'sparepart-mobil',
+                'description' => 'Suku cadang mobil seperti mesin, rem, filter, dan komponen pendukung lainnya',
                 'is_active' => true,
             ],
             [
-                'name' => 'Fashion Pria',
-                'slug' => 'fashion-pria',
-                'description' => 'Pakaian, sepatu, dan aksesoris untuk pria',
+                'name' => 'Sparepart Motor',
+                'slug' => 'sparepart-motor',
+                'description' => 'Suku cadang motor seperti rantai, kampas rem, oli, dan komponen motor lainnya',
                 'is_active' => true,
             ],
             [
-                'name' => 'Fashion Wanita',
-                'slug' => 'fashion-wanita',
-                'description' => 'Pakaian, sepatu, dan aksesoris untuk wanita',
+                'name' => 'Aksesoris Kendaraan',
+                'slug' => 'aksesoris-kendaraan',
+                'description' => 'Aksesoris kendaraan seperti cover jok, spion, lampu variasi, dan aksesoris interior',
                 'is_active' => true,
             ],
             [
-                'name' => 'Makanan & Minuman',
-                'slug' => 'makanan-minuman',
-                'description' => 'Berbagai makanan ringan, minuman, dan bahan makanan',
+                'name' => 'Perawatan Kendaraan',
+                'slug' => 'perawatan-kendaraan',
+                'description' => 'Produk perawatan kendaraan seperti oli, cairan pembersih, wax, dan perawatan mesin',
                 'is_active' => true,
             ],
             [
-                'name' => 'Kesehatan & Kecantikan',
-                'slug' => 'kesehatan-kecantikan',
-                'description' => 'Produk kesehatan, skincare, dan kosmetik',
+                'name' => 'Ban & Velg',
+                'slug' => 'ban-velg',
+                'description' => 'Ban dan velg untuk mobil dan motor berbagai ukuran dan tipe',
                 'is_active' => true,
             ],
             [
-                'name' => 'Rumah Tangga',
-                'slug' => 'rumah-tangga',
-                'description' => 'Peralatan rumah tangga dan dekorasi',
+                'name' => 'Helm & Safety',
+                'slug' => 'helm-safety',
+                'description' => 'Helm dan perlengkapan keselamatan berkendara seperti sarung tangan dan pelindung',
                 'is_active' => true,
             ],
         ];
@@ -53,6 +53,6 @@ class CategorySeeder extends Seeder
             Category::create($category);
         }
 
-        $this->command->info('✅ Categories seeded successfully!');
+        $this->command->info('✅ Kategori otomotif berhasil di-seed!');
     }
 }

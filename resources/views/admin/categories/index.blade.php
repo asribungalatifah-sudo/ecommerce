@@ -4,28 +4,83 @@
 
 @push('styles')
 <style>
-    /* ===== FIX ICON & MODAL THEME ===== */
+    :root {
+        --brown: #8D6E63;
+        --brown-soft: #BCAAA4;
+        --gray: #EDEDED;
+        --gray-soft: #F7F6F5;
+        --red-pastel: #E6B0AA;
+        --black-soft: #3E3A39;
+    }
+
     .bi {
         font-family: bootstrap-icons !important;
-        font-style: normal;
     }
 
-    .modal-content {
-        background-color: #fff !important;
+    .card {
+        border-radius: 1rem;
+        background: var(--gray-soft);
     }
 
-    .modal-backdrop.show {
-        opacity: .5;
+    .card-header {
+        background: linear-gradient(135deg, var(--brown), var(--red-pastel));
+        color: #fff;
+        border-radius: 1rem 1rem 0 0;
     }
 
-    /* ===== SMOOTH MODAL ANIMATION ===== */
-    .modal.fade .modal-dialog {
-        transform: scale(.95);
-        transition: transform .2s ease-out;
+    .table thead {
+        background: var(--gray);
     }
 
-    .modal.show .modal-dialog {
-        transform: scale(1);
+    .table-hover tbody tr:hover {
+        background: #F0ECEB;
+    }
+
+    .badge-products {
+        background: var(--brown-soft);
+        color: var(--black-soft);
+    }
+
+    .badge-active {
+        background: #C8E6C9;
+        color: #2E7D32;
+    }
+
+    .badge-inactive {
+        background: var(--gray);
+        color: #616161;
+    }
+
+    .btn-outline-brown {
+        border: 1px solid var(--brown);
+        color: var(--black-soft);
+        border-radius: 999px;
+    }
+
+    .btn-outline-brown:hover {
+        background: linear-gradient(135deg, var(--brown), var(--red-pastel));
+        color: #fff;
+        border-color: transparent;
+    }
+
+    .pagination {
+        justify-content: center;
+        gap: 6px;
+    }
+
+    .pagination svg {
+        width: 14px !important;
+        height: 14px !important;
+    }
+
+    .pagination .page-link {
+        border-radius: 999px;
+    }
+
+    .pagination .page-item.active .page-link {
+        background: linear-gradient(135deg, var(--brown), var(--red-pastel));
+        border-color: transparent;
+        color: #fff;
     }
 </style>
 @endpush
@@ -34,64 +89,57 @@
 <div class="row justify-content-center">
     <div class="col-lg-12">
 
-        {{-- FLASH MESSAGE --}}
-        @if(session('success'))
-        <div class="alert alert-success alert-dismissible fade show">
-            <i class="bi bi-check-circle me-1"></i> {{ session('success') }}
-            <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
-        </div>
-        @endif
-
-        @if(session('error'))
-        <div class="alert alert-danger alert-dismissible fade show">
-            <i class="bi bi-exclamation-triangle me-1"></i> {{ session('error') }}
-            <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
-        </div>
-        @endif
-
         <div class="card shadow-sm border-0 mb-4">
 
-            {{-- CARD HEADER --}}
-            <div
-                class="card-header bg-primary bg-gradient text-white d-flex justify-content-between align-items-center">
+            {{-- HEADER --}}
+            <div class="card-header d-flex justify-content-between align-items-center">
                 <div>
                     <h5 class="mb-0 fw-bold">
-                        <i class="bi bi-tags me-2"></i> Manajemen Kategori
+                        <i class="bi bi-mortarboard me-2"></i>
+                        Manajemen Kategori Jurusan SMK
                     </h5>
-                    <small class="opacity-75">Kelola kategori produk</small>
+                    <small class="opacity-75">Perlengkapan sesuai jurusan</small>
                 </div>
-
-                <button class="btn btn-light btn-sm fw-semibold" data-bs-toggle="modal" data-bs-target="#createModal">
-                    <i class="bi bi-plus-circle me-1"></i> Tambah
-                </button>
             </div>
 
             {{-- TABLE --}}
             <div class="card-body p-0">
                 <div class="table-responsive">
                     <table class="table table-hover align-middle mb-0">
-                        <thead class="table-light">
+                        <thead>
                             <tr>
-                                <th class="ps-4">Kategori</th>
+                                <th class="ps-4">Jurusan</th>
                                 <th class="text-center">Produk</th>
                                 <th class="text-center">Status</th>
                                 <th class="text-end pe-4">Aksi</th>
                             </tr>
                         </thead>
                         <tbody>
-                            @forelse($categories as $category)
+                        @forelse($categories as $category)
+
+                        @php
+                            $icons = [
+                                'rpl' => 'bi-code-slash',
+                                'tkj' => 'bi-router',
+                                'tkr' => 'bi-car-front',
+                                'tsm' => 'bi-bicycle',
+                                'otkp' => 'bi-journal-text',
+                                'bdp' => 'bi-shop',
+                                'akl' => 'bi-calculator',
+                                'mm'  => 'bi-camera-video',
+                                'multimedia' => 'bi-camera-video',
+                            ];
+
+                            $icon = $icons[strtolower($category->slug)] ?? 'bi-box-seam';
+                        @endphp
+
                             <tr>
                                 <td class="ps-4">
                                     <div class="d-flex align-items-center">
-                                        @if($category->image)
-                                        <img src="{{ Storage::url($category->image) }}" class="rounded me-3 border"
-                                            width="44" height="44">
-                                        @else
                                         <div class="bg-light rounded-circle d-flex align-items-center justify-content-center me-3"
-                                            style="width:44px;height:44px">
-                                            <i class="bi bi-image text-muted"></i>
+                                             style="width:44px;height:44px">
+                                            <i class="bi {{ $icon }} fs-5 text-muted"></i>
                                         </div>
-                                        @endif
                                         <div>
                                             <div class="fw-bold">{{ $category->name }}</div>
                                             <small class="text-muted">{{ $category->slug }}</small>
@@ -100,145 +148,48 @@
                                 </td>
 
                                 <td class="text-center">
-                                    <span class="badge bg-info-subtle text-info fw-semibold px-3 py-2">
-                                        <i class="bi bi-box-seam me-1"></i>
+                                    <span class="badge badge-products px-3 py-2">
                                         {{ $category->products_count }}
                                     </span>
                                 </td>
 
                                 <td class="text-center">
                                     @if($category->is_active)
-                                    <span class="badge bg-success-subtle text-success px-3 py-2">
-                                        <i class="bi bi-check-circle me-1"></i> Aktif
-                                    </span>
+                                        <span class="badge badge-active px-3 py-2">Aktif</span>
                                     @else
-                                    <span class="badge bg-secondary-subtle text-secondary px-3 py-2">
-                                        <i class="bi bi-x-circle me-1"></i> Nonaktif
-                                    </span>
+                                        <span class="badge badge-inactive px-3 py-2">Nonaktif</span>
                                     @endif
                                 </td>
 
                                 <td class="text-end pe-4">
                                     <div class="btn-group">
-                                        <button class="btn btn-sm btn-outline-warning" data-bs-toggle="modal"
-                                            data-bs-target="#editModal{{ $category->id }}" title="Edit">
+                                        <button class="btn btn-sm btn-outline-brown">
                                             <i class="bi bi-pencil"></i>
                                         </button>
-
-                                        <form action="{{ route('admin.categories.destroy', $category) }}" method="POST"
-                                            onsubmit="return confirm('Yakin hapus kategori ini?')">
-                                            @csrf
-                                            @method('DELETE')
-                                            <button type="submit" class="btn btn-sm btn-outline-danger" title="Hapus">
-                                                <i class="bi bi-trash"></i>
-                                            </button>
-                                        </form>
+                                        <button class="btn btn-sm btn-outline-danger">
+                                            <i class="bi bi-trash"></i>
+                                        </button>
                                     </div>
                                 </td>
                             </tr>
-                            @empty
+                        @empty
                             <tr>
                                 <td colspan="4" class="text-center py-5 text-muted">
                                     <i class="bi bi-folder-x fs-3 d-block mb-2"></i>
-                                    Belum ada kategori
+                                    Belum ada kategori jurusan
                                 </td>
                             </tr>
-                            @endforelse
+                        @endforelse
                         </tbody>
                     </table>
                 </div>
             </div>
 
-            <div class="card-footer bg-white">
+            {{-- PAGINATION --}}
+            <div class="card-footer bg-transparent">
                 {{ $categories->links() }}
             </div>
         </div>
-    </div>
-</div>
-
-{{-- ================= EDIT MODAL ================= --}}
-@foreach($categories as $category)
-<div class="modal fade" id="editModal{{ $category->id }}" tabindex="-1">
-    <div class="modal-dialog modal-dialog-centered">
-        <form class="modal-content border-0 shadow-lg rounded-4"
-            action="{{ route('admin.categories.update', $category) }}" method="POST" enctype="multipart/form-data">
-            @csrf
-            @method('PUT')
-
-            <div class="modal-header bg-primary bg-gradient text-white">
-                <h5 class="modal-title fw-bold">
-                    <i class="bi bi-pencil-square me-1"></i> Edit Kategori
-                </h5>
-                <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"></button>
-            </div>
-
-            <div class="modal-body">
-                <div class="mb-3">
-                    <label class="form-label fw-semibold">Nama Kategori</label>
-                    <input type="text" name="name" class="form-control" value="{{ $category->name }}" required>
-                </div>
-
-                <div class="mb-3">
-                    <label class="form-label fw-semibold">Gambar</label>
-                    <input type="file" name="image" class="form-control">
-                </div>
-
-                <div class="form-check form-switch">
-                    <input class="form-check-input" type="checkbox" name="is_active" value="1" {{ $category->is_active ?
-                    'checked' : '' }}>
-                    <label class="form-check-label">Aktif</label>
-                </div>
-            </div>
-
-            <div class="modal-footer bg-light">
-                <button type="button" class="btn btn-outline-secondary" data-bs-dismiss="modal">Batal</button>
-                <button type="submit" class="btn btn-primary">
-                    <i class="bi bi-save me-1"></i> Simpan
-                </button>
-            </div>
-        </form>
-    </div>
-</div>
-@endforeach
-
-{{-- ================= CREATE MODAL ================= --}}
-<div class="modal fade" id="createModal" tabindex="-1">
-    <div class="modal-dialog modal-dialog-centered">
-        <form class="modal-content border-0 shadow-lg rounded-4" action="{{ route('admin.categories.store') }}"
-            method="POST" enctype="multipart/form-data">
-            @csrf
-
-            <div class="modal-header bg-primary bg-gradient text-white">
-                <h5 class="modal-title fw-bold">
-                    <i class="bi bi-plus-circle me-1"></i> Tambah Kategori
-                </h5>
-                <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"></button>
-            </div>
-
-            <div class="modal-body">
-                <div class="mb-3">
-                    <label class="form-label fw-semibold">Nama Kategori</label>
-                    <input type="text" name="name" class="form-control" placeholder="Contoh: Elektronik" required>
-                </div>
-
-                <div class="mb-3">
-                    <label class="form-label fw-semibold">Gambar</label>
-                    <input type="file" name="image" class="form-control">
-                </div>
-
-                <div class="form-check form-switch">
-                    <input class="form-check-input" type="checkbox" name="is_active" value="1" checked>
-                    <label class="form-check-label">Langsung Aktif</label>
-                </div>
-            </div>
-
-            <div class="modal-footer bg-light">
-                <button type="button" class="btn btn-outline-secondary" data-bs-dismiss="modal">Batal</button>
-                <button type="submit" class="btn btn-primary">
-                    <i class="bi bi-save me-1"></i> Simpan
-                </button>
-            </div>
-        </form>
     </div>
 </div>
 @endsection
