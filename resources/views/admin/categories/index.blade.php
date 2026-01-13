@@ -134,12 +134,28 @@
                         @endphp
 
                             <tr>
+                                {{-- KATEGORI --}}
                                 <td class="ps-4">
                                     <div class="d-flex align-items-center">
-                                        <div class="bg-light rounded-circle d-flex align-items-center justify-content-center me-3"
-                                             style="width:44px;height:44px">
-                                            <i class="bi {{ $icon }} fs-5 text-muted"></i>
+
+                                        {{-- FOTO / ICON --}}
+                                        <div class="me-3">
+                                            @if($category->image)
+                                                <img
+                                                    src="{{ asset('storage/' . $category->image) }}"
+                                                    alt="{{ $category->name }}"
+                                                    class="rounded-circle border"
+                                                    style="width:44px;height:44px;object-fit:cover;"
+                                                >
+                                            @else
+                                                <div class="bg-light rounded-circle d-flex align-items-center justify-content-center"
+                                                     style="width:44px;height:44px">
+                                                    <i class="bi {{ $icon }} fs-5 text-muted"></i>
+                                                </div>
+                                            @endif
                                         </div>
+
+                                        {{-- NAMA --}}
                                         <div>
                                             <div class="fw-bold">{{ $category->name }}</div>
                                             <small class="text-muted">{{ $category->slug }}</small>
@@ -147,12 +163,14 @@
                                     </div>
                                 </td>
 
+                                {{-- JUMLAH PRODUK --}}
                                 <td class="text-center">
                                     <span class="badge badge-products px-3 py-2">
                                         {{ $category->products_count }}
                                     </span>
                                 </td>
 
+                                {{-- STATUS --}}
                                 <td class="text-center">
                                     @if($category->is_active)
                                         <span class="badge badge-active px-3 py-2">Aktif</span>
@@ -161,14 +179,23 @@
                                     @endif
                                 </td>
 
+                                {{-- AKSI --}}
                                 <td class="text-end pe-4">
                                     <div class="btn-group">
-                                        <button class="btn btn-sm btn-outline-brown">
+                                        <a href="{{ route('admin.categories.edit', $category->id) }}"
+                                           class="btn btn-sm btn-outline-brown">
                                             <i class="bi bi-pencil"></i>
-                                        </button>
-                                        <button class="btn btn-sm btn-outline-danger">
-                                            <i class="bi bi-trash"></i>
-                                        </button>
+                                        </a>
+
+                                        <form action="{{ route('admin.categories.destroy', $category->id) }}"
+                                              method="POST"
+                                              onsubmit="return confirm('Yakin hapus kategori ini?')">
+                                            @csrf
+                                            @method('DELETE')
+                                            <button class="btn btn-sm btn-outline-danger">
+                                                <i class="bi bi-trash"></i>
+                                            </button>
+                                        </form>
                                     </div>
                                 </td>
                             </tr>
@@ -189,6 +216,7 @@
             <div class="card-footer bg-transparent">
                 {{ $categories->links() }}
             </div>
+
         </div>
     </div>
 </div>

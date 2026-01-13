@@ -12,47 +12,42 @@ class CategorySeeder extends Seeder
     {
         $categories = [
             [
-                'name' => 'Sparepart Mobil',
-                'slug' => 'sparepart-mobil',
-                'description' => 'Suku cadang mobil seperti mesin, rem, filter, dan komponen pendukung lainnya',
+                'name' => 'Perangkat Komputer',
+                'slug' => 'perangkat-komputer',
+                'description' => 'Komponen dan perangkat komputer seperti CPU, motherboard, RAM, VGA, dan storage',
                 'is_active' => true,
             ],
             [
-                'name' => 'Sparepart Motor',
-                'slug' => 'sparepart-motor',
-                'description' => 'Suku cadang motor seperti rantai, kampas rem, oli, dan komponen motor lainnya',
+                'name' => 'Laptop & Notebook',
+                'slug' => 'laptop-notebook',
+                'description' => 'Laptop dan notebook untuk kerja, sekolah, desain, dan gaming',
                 'is_active' => true,
             ],
             [
-                'name' => 'Aksesoris Kendaraan',
-                'slug' => 'aksesoris-kendaraan',
-                'description' => 'Aksesoris kendaraan seperti cover jok, spion, lampu variasi, dan aksesoris interior',
+                'name' => 'Smartphone & Tablet',
+                'slug' => 'smartphone-tablet',
+                'description' => 'Smartphone dan tablet dari berbagai merek dan spesifikasi',
                 'is_active' => true,
             ],
             [
-                'name' => 'Perawatan Kendaraan',
-                'slug' => 'perawatan-kendaraan',
-                'description' => 'Produk perawatan kendaraan seperti oli, cairan pembersih, wax, dan perawatan mesin',
+                'name' => 'Aksesoris Gadget',
+                'slug' => 'aksesoris-gadget',
+                'description' => 'Aksesoris gadget seperti charger, kabel data, casing, holder, dan power bank',
                 'is_active' => true,
             ],
             [
-                'name' => 'Ban & Velg',
-                'slug' => 'ban-velg',
-                'description' => 'Ban dan velg untuk mobil dan motor berbagai ukuran dan tipe',
+                'name' => 'Perangkat Jaringan',
+                'slug' => 'perangkat-jaringan',
+                'description' => 'Perangkat jaringan seperti router, modem, switch, repeater, dan access point',
                 'is_active' => true,
             ],
-            [
-                'name' => 'Helm & Safety',
-                'slug' => 'helm-safety',
-                'description' => 'Helm dan perlengkapan keselamatan berkendara seperti sarung tangan dan pelindung',
-                'is_active' => true,
-            ],
+
         ];
 
         foreach ($categories as $category) {
             Category::create($category);
         }
 
-        $this->command->info('✅ Kategori otomotif berhasil di-seed!');
+        $this->command->info('✅ Kategori perlengkapan teknologi berhasil di-seed!');
     }
 }
